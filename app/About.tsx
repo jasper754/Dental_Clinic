@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Alert, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Alert, Text, ScrollView, ImageBackground } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { signOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 import { useRouter } from 'expo-router';
 
-import { Collapsible } from '@/components/Collapsible';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+const backgroundImage = require('../assets/images/Background.png');
 
 export default function About() {
   const router = useRouter();
@@ -17,169 +14,189 @@ export default function About() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      router.replace('/Home');
+      router.replace('/+not-found');
     } catch (error: any) {
       Alert.alert('Logout Error', error.message);
     }
   };
 
   const handleReservation = () => {
-    router.push('/Reservation');  // Navigate to Reservation Screen
-  };
-
-  const handleSettings = () => {
-    router.push('/Settings'); // Navigate to Settings Screen
+    router.push('/Reservation'); // Navigate to Reservation Screen
   };
 
   const handleCheckReservations = () => {
-    router.push('/ReservationCheckScreen');  // Navigate to the Reservation Check Screen
+    router.push('/ReservationScreen'); // Navigate to Reservation Check Screen
   };
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#E0F7FA', dark: '#004D40' }}
-      headerImage={
-        <MaterialCommunityIcons
-          size={310}
-          color="#00BCD4"
-          name="tooth-outline"
-          style={styles.headerImage}
-        />
-      }>
-      
-      {/* Profile Icon */}
-      <View style={styles.topRight}>
-        <TouchableOpacity onPress={() => setMenuVisible(!menuVisible)}>
-          <MaterialCommunityIcons name="account-circle" size={34} color="#004D40" />
-        </TouchableOpacity>
-      </View>
+    <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.logo}>SmileCare 🦷</Text>
+          <Text style={styles.heading}>Welcome to SmileCare</Text>
+          <Text style={styles.subheading}>Your smile is our priority</Text>
+        </View>
 
-      {/* Profile Dropdown Menu */}
-      {menuVisible && (
-        <View style={styles.menu}>
-          <TouchableOpacity onPress={handleSettings}>
-            <Text style={styles.menuText}>Settings</Text>
+        <View style={styles.cardContainer}>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Our Mission</Text>
+            <Text style={styles.cardText}>
+              To provide high-quality, compassionate dental care in a stress-free environment.
+            </Text>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>What We Offer</Text>
+            <Text style={styles.cardText}>
+              From routine checkups to advanced cosmetic procedures, we ensure every patient gets the best treatment.
+            </Text>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Why Choose Us</Text>
+            <Text style={styles.cardText}>
+              We use modern equipment, focus on patient comfort, and offer a welcoming atmosphere for all our clients.
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.actionButtons}>
+          <TouchableOpacity style={styles.floatingButton} onPress={handleReservation}>
+            <Text style={styles.floatingButtonText}>📝 Make a Reservation</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleLogout}>
-            <Text style={styles.menuText}>Logout</Text>
+
+          <TouchableOpacity style={styles.floatingButton} onPress={handleCheckReservations}>
+            <Text style={styles.floatingButtonText}>🔍 Check Reservations</Text>
           </TouchableOpacity>
         </View>
-      )}
 
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title" style={styles.title}>🦷 About Our Dental Clinic 🪥</ThemedText>
-      </ThemedView>
-      <ThemedText style={styles.description}>
-        Welcome to SmileCare Dental Clinic! We provide top-notch dental services with care and comfort.
-      </ThemedText>
+        <View style={styles.profileMenu}>
+          <TouchableOpacity onPress={() => setMenuVisible(!menuVisible)}>
+            <MaterialCommunityIcons name="account-circle" size={40} color="#004D40" />
+          </TouchableOpacity>
 
-      <Collapsible title="Our Mission">
-        <ThemedText>
-          To deliver gentle, compassionate, and quality dental care to every patient.
-        </ThemedText>
-      </Collapsible>
-
-      <Collapsible title="What We Offer">
-        <ThemedText>
-          From routine checkups to cosmetic dentistry, we offer a full range of dental services.
-        </ThemedText>
-      </Collapsible>
-
-      <Collapsible title="Why Choose Us">
-        <ThemedText>
-          We prioritize patient comfort, use modern equipment, and ensure a stress-free experience.
-        </ThemedText>
-      </Collapsible>
-
-      <TouchableOpacity style={styles.reservationButton} onPress={handleReservation}>
-        <Text style={styles.reservationButtonText}>📝 Make a Reservation</Text>
-      </TouchableOpacity>
-
-      {/* New Button to Check Reservations */}
-      <TouchableOpacity style={styles.checkReservationButton} onPress={handleCheckReservations}>
-        <Text style={styles.checkReservationText}>🔍 Check Your Reservations</Text>
-      </TouchableOpacity>
-    </ParallaxScrollView>
+          {menuVisible && (
+            <View style={styles.menu}>
+              <TouchableOpacity onPress={() => router.push('/Profile')}>
+                <Text style={styles.menuText}>Profile</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleLogout}>
+                <Text style={styles.menuText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    bottom: -70,
-    left: -20,
-    position: 'absolute',
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
-  topRight: {
+  container: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  logo: {
+    fontSize: 38,
+    fontWeight: '800',
+    color: '#004D40',
+    marginBottom: 5,
+  },
+  heading: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#004D40',
+    marginBottom: 5,
+  },
+  subheading: {
+    fontSize: 18,
+    color: '#00796B',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  cardContainer: {
+    width: '100%',
+    marginBottom: 40,
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#004D40',
+    marginBottom: 10,
+  },
+  cardText: {
+    fontSize: 16,
+    color: '#00796B',
+    lineHeight: 22,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 20,
+  },
+  floatingButton: {
+    backgroundColor: '#00BCD4',
+    paddingVertical: 16,
+    paddingHorizontal: 30,
+    borderRadius: 50,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  floatingButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  profileMenu: {
     position: 'absolute',
-    top: 10,  // Placing it at the very top
+    top: 20,
     right: 20,
     zIndex: 100,
   },
   menu: {
     position: 'absolute',
-    top: 50,  // Slightly below the profile icon
-    right: 20,
+    top: 60,
+    right: 0,
     backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    elevation: 5,
-    zIndex: 100,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 6,
   },
   menuText: {
-    fontSize: 16,
-    color: '#004D40',  // A green color to match the theme
-    fontWeight: 'bold',
-    paddingVertical: 5,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 20,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#004D40',
-  },
-  description: {
-    fontSize: 16,
-    marginTop: 10,
-    color: '#00796B',
-    textAlign: 'center',
-  },
-  reservationButton: {
-    backgroundColor: '#00BCD4',
-    marginTop: 30,
-    paddingVertical: 14,
-    borderRadius: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  reservationButtonText: {
-    color: '#fff',
+    padding: 10,
     fontSize: 18,
-    fontWeight: 'bold',
-  },
-  checkReservationButton: {
-    backgroundColor: '#FF4081',  // A distinct color for the new button
-    marginTop: 15,
-    paddingVertical: 12,
-    borderRadius: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  checkReservationText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#00796B',
   },
 });

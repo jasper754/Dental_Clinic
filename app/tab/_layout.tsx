@@ -3,12 +3,12 @@ import React from 'react';
 import { useColorScheme } from '@/hooks/useColorScheme';  
 import { Colors } from '@/constants/Colors';  
 import { MaterialIcons } from '@expo/vector-icons';  
-import { useNavigation } from '@react-navigation/native';  // Import the hook for navigation
+import { useNavigation } from '@react-navigation/native';  
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const navigation = useNavigation();  // Hook to access navigation
+  const navigation = useNavigation();  
 
   return (
     <Tabs
@@ -83,13 +83,13 @@ export default function TabLayout() {
       
       {/* Adding Login Icon Button outside the Tabs (in the header or somewhere else) */}
       <Tabs.Screen
-        name="Login"  // Add the Login screen here
+        name="Login"  
         options={{
           title: 'Login',
           tabBarIcon: ({ color }) => (
             <MaterialIcons size={28} name="login" color={color} />
           ),
-          tabBarStyle: { display: 'none' },  // Hide the tab bar for Login screen
+          tabBarStyle: { display: 'none' }, 
         }}
       />
     </Tabs>

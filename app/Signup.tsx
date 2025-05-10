@@ -8,33 +8,38 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import { useRouter, Link } from 'expo-router';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebaseConfig';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useRouter, Link } from 'expo-router';
 
-// Import the background image
-const backgroundImage = require('../assets/images/Background.png'); // Adjust the path if needed
+// Correct path to the image
+const backgroundImage = require('../assets/images/Background.png');
 
-export default function LoginScreen() {
+export default function SignupScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push('/About');
+      await createUserWithEmailAndPassword(auth, email, password);
+      Alert.alert('Success', 'Account created!');
+      router.replace('/+not-found'); // Change to your actual home screen
     } catch (error: any) {
-      Alert.alert('Login Error', error.message);
+      Alert.alert('Signup Error', error.message);
     }
   };
 
   return (
-    <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
-      <View style={styles.overlay}>
+    <ImageBackground
+      source={backgroundImage}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
         <Text style={styles.logo}>SmileCare 🦷</Text>
-        <Text style={styles.heading}>Welcome Back</Text>
-        <Text style={styles.subheading}>Log in to continue</Text>
+        <Text style={styles.heading}>Create Account</Text>
+        <Text style={styles.subheading}>Sign up to get started</Text>
 
         <TextInput
           placeholder="Email"
@@ -53,14 +58,15 @@ export default function LoginScreen() {
           style={styles.input}
         />
 
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Log In</Text>
+        <TouchableOpacity style={styles.loginButton} onPress={handleSignUp}>
+          <Text style={styles.loginButtonText}>Sign Up</Text>
         </TouchableOpacity>
 
-        <Link href="/Signup" asChild>
+        <Link href="/+not-found" asChild>
           <TouchableOpacity>
             <Text style={styles.signupText}>
-              Don't have an account? <Text style={styles.signupLink}>Sign Up</Text>
+              Already have an account?{' '}
+              <Text style={styles.signupLink}>Log in</Text>
             </Text>
           </TouchableOpacity>
         </Link>
@@ -75,9 +81,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  overlay: {
+  container: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.85)', // optional white overlay
+    backgroundColor: 'rgba(255, 255, 255, 0.85)', // optional translucent layer
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
